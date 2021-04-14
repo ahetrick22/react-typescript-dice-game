@@ -1,10 +1,10 @@
 import React, {ReactNode, useEffect, useState} from "react";
-import { Image, Heading, Text, SimpleGrid, Input } from "@chakra-ui/react"
+import { Text, SimpleGrid, Input } from "@chakra-ui/react"
 import {DiceSides, diceSidesKeys, diceSidesValues} from "../types/diceSides";
 import {DieSvgs} from "../components/DieSvgs";
 import {GameButton} from "../components/GameButton";
 import {GameSectionContainer, GameSectionContainerText} from "../components/GameSectionContainer";
-import backgroundImage from '../assets/background-image.jpg';
+import BackgroundImageAndTitle from "../components/BackgroundImageAndTitle";
 
 type HomeState = {
     currentRoll: DiceSides | null,
@@ -39,11 +39,13 @@ export const Home = () => {
         // If we've just gotten to 5, make sure that the user knows which number won and that the game stops
         const winningScore = Object.keys(state.overallScore).find(key => state.overallScore[key] === 5);
         if (winningScore) {
-            setState(prevState => {return {
-                ...prevState,
-                gameOver: true,
-                rollText: `Current game complete. The winner is ${winningScore}!`
-            }})
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    gameOver: true,
+                    rollText: `Current game complete. The winner is ${winningScore}!`
+                }
+            })
         }
     }, [state.overallScore])
 
@@ -63,7 +65,7 @@ export const Home = () => {
         // Get a random roll
         let newRoll = parseInt(diceSidesValues[Math.floor(Math.random() * diceSidesValues.length)]);
 
-        // Update the current roll value and the total overall score at the current roll
+        // Update the current roll value, the total overall score & the roll text for the current roll
         setState(prevState => {
             return {
                 ...prevState,
@@ -79,28 +81,22 @@ export const Home = () => {
 
     const resetGame = () => {
         // reset all values besides the selected die fill color
-        setState(prevState => {return {...initialHomeState, fill: prevState.fill}});
+        setState(prevState => {
+            return {...initialHomeState, fill: prevState.fill}
+        });
     }
 
     return (
         <>
-            <Image src={backgroundImage} opacity={0.2} fit={'cover'} zIndex={-1} position={'fixed'} minH={'100%'}/>
-            <Heading
-                as="h1"
-                size={'2xl'}
-                textAlign={'center'}
-                mb={8}
-            >
-                Welcome to Dicey Stuff
-            </Heading>
+            <BackgroundImageAndTitle/>
             <SimpleGrid
                 minChildWidth="200px"
                 spacing="40px"
             >
-               <GameSectionContainer>
+                <GameSectionContainer>
                     <GameSectionContainerText text={"Available Actions"}/>
                     <GameButton onClick={rollDie} text={"Roll Die"} disabled={state.gameOver}/>
-                    <GameButton onClick={resetGame} text={"Reset"} />
+                    <GameButton onClick={resetGame} text={"Reset"}/>
                     <Text>Choose Die Color: </Text>
                     <Input
                         type={'color'}
@@ -123,13 +119,12 @@ export const Home = () => {
                     {state.dieSvg}
                 </GameSectionContainer>
                 <GameSectionContainer>
-                    <GameSectionContainerText text={"Scores (first to 5 wins)"} />
+                    <GameSectionContainerText text={"Scores (first to 5 wins)"}/>
                     {diceSidesKeys.map(side =>
                         <Text key={side}>{`${side}: ${state.overallScore[DiceSides[side]]}`}</Text>
                     )}
                 </GameSectionContainer>
             </SimpleGrid>
-
         </>
     );
 };
