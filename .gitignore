@@ -1,0 +1,14 @@
+# Logs
+logs
+*.log*
+
+# Dependency directory
+node_modules
+
+# Parcel build/cache
+dist
+.cache
+
+# IDEA/Webstorm project files
+.idea
+*.iml
