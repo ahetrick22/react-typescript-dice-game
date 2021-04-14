@@ -1,12 +1,12 @@
 import React, {ReactNode, useEffect, useState} from "react";
-import { Image, Button, Heading, Text, SimpleGrid, Box, Flex } from "@chakra-ui/react"
+import { Image, Heading, Text, SimpleGrid, Input } from "@chakra-ui/react"
 import {DiceSides, diceSidesKeys, diceSidesValues} from "../types/diceSides";
 import {DieSvgs} from "../components/DieSvgs";
 import {GameButton} from "../components/GameButton";
 import {GameSectionContainer, GameSectionContainerText} from "../components/GameSectionContainer";
 
 type HomeState = {
-    currentRoll: number | null,
+    currentRoll: DiceSides | null,
     overallScore: {[key in DiceSides]: number},
     dieSvg: ReactNode | null,
     fill: string,
@@ -25,7 +25,7 @@ const initialHomeState: HomeState = {
         [DiceSides.six]: 0,
     },
     dieSvg: null,
-    fill: '#000',
+    fill: '#000000',
     gameOver: false,
 }
 
@@ -40,6 +40,18 @@ export const Home = () => {
         }
     }, [state.overallScore])
 
+    useEffect(() => {
+        // update the die svg when either the current roll (if there is one) or the fill changes
+        if (state.currentRoll) {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    dieSvg: DieSvgs(state.currentRoll as DiceSides, state.fill)
+                }
+            })
+        }
+    }, [state.currentRoll, state.fill])
+
     const rollDie = () => {
         // Get a random roll
         let newRoll = parseInt(diceSidesValues[Math.floor(Math.random() * diceSidesValues.length)]);
@@ -52,8 +64,7 @@ export const Home = () => {
                 overallScore: {
                     ...prevState.overallScore,
                     [newRoll]: prevState.overallScore[newRoll] + 1
-                },
-                dieSvg: DieSvgs(newRoll, state.fill)
+                }
             }
         });
     }
@@ -90,6 +101,20 @@ export const Home = () => {
                     <GameSectionContainerText text={"Available Actions"}/>
                     <GameButton onClick={rollDie} text={"Roll Die"} disabled={state.gameOver}/>
                     <GameButton onClick={resetGame} text={"Reset"} />
+                    <Text>Choose Die Color: </Text>
+                    <Input
+                        type={'color'}
+                        value={state.fill}
+                        onChange={(newVal) =>
+                            setState(prevState => {
+                                return {
+                                    ...prevState,
+                                    fill: newVal.target.value,
+                                }
+                            })
+                        }
+                        maxW={'100px'}
+                    />
                 </GameSectionContainer>
                 <GameSectionContainer>
                     <GameSectionContainerText
@@ -98,7 +123,7 @@ export const Home = () => {
                     {state.dieSvg}
                 </GameSectionContainer>
                 <GameSectionContainer>
-                    <GameSectionContainerText text={"Current Scores"} />
+                    <GameSectionContainerText text={"Scores (first to 5 wins)"} />
                     {diceSidesKeys.map(side =>
                         <Text key={side}>{`${side}: ${state.overallScore[DiceSides[side]]}`}</Text>
                     )}
