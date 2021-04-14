@@ -1,22 +1,15 @@
-import React, {useEffect, useState} from "react";
-import { Image, Button, Heading, Text } from "@chakra-ui/react"
-
-enum DiceSides {
-    one = 1,
-    two,
-    three,
-    four,
-    five,
-    six
-}
-
-// Reference for building arrays from enums: https://github.com/microsoft/TypeScript/issues/17198#issuecomment-315400819
-const diceSidesKeys = Object.keys(DiceSides).filter(k => typeof DiceSides[k as any] === "number");
-const diceSidesValues = diceSidesKeys.map(k => DiceSides[k as any]);
+import React, {ReactNode, useEffect, useState} from "react";
+import { Image, Button, Heading, Text, SimpleGrid, Box, Flex } from "@chakra-ui/react"
+import {DiceSides, diceSidesKeys, diceSidesValues} from "../types/diceSides";
+import {DieSvgs} from "../components/DieSvgs";
+import {GameButton} from "../components/GameButton";
 
 type HomeState = {
     currentRoll: number | null,
     overallScore: {[key in DiceSides]: number},
+    dieSvg: ReactNode | null,
+    fill: string,
+    gameOver: boolean,
 }
 
 // Initialize outside of component to prevent reallocation on each render
@@ -29,7 +22,10 @@ const initialHomeState: HomeState = {
         [DiceSides.four]: 0,
         [DiceSides.five]: 0,
         [DiceSides.six]: 0,
-    }
+    },
+    dieSvg: null,
+    fill: '#000',
+    gameOver: false,
 }
 
 export const Home = () => {
@@ -39,8 +35,7 @@ export const Home = () => {
         // If we've just gotten to 5, make sure that the user knows which number won and that the game stops
         const winningScore = Object.keys(state.overallScore).find(key => state.overallScore[key] === 5);
         if (winningScore) {
-            alert(`The winner is ${winningScore}!`)
-            resetGame();
+            setState(prevState => {return {...prevState, gameOver: true}})
         }
     }, [state.overallScore])
 
@@ -56,13 +51,15 @@ export const Home = () => {
                 overallScore: {
                     ...prevState.overallScore,
                     [newRoll]: prevState.overallScore[newRoll] + 1
-                }
+                },
+                dieSvg: DieSvgs(newRoll, state.fill)
             }
         });
     }
 
     const resetGame = () => {
-        setState(initialHomeState);
+        // reset all values besides the selected die fill color
+        setState(prevState => {return {...initialHomeState, fill: prevState.fill}});
     }
 
     return (
@@ -72,13 +69,54 @@ export const Home = () => {
                 as="h1"
                 size="4xl"
                 textAlign={'center'}
+                mb={8}
             >
                 Welcome to Dicey Stuff
             </Heading>
-            <Text>Current Roll {state.currentRoll === null ? 'N/A' : state.currentRoll}</Text>
-            <Button onClick={rollDie}>Roll</Button>
-            <Button onClick={resetGame}>Reset</Button>
-            {diceSidesKeys.map(side => <Text key={side}>{`${side}: ${state.overallScore[DiceSides[side]]}`}</Text>)}
+            <SimpleGrid
+                minChildWidth="200px"
+                spacing="40px"
+            >
+                <Flex
+                align={'center'}
+                direction={'column'}
+                bg={'#F1F1F1'}
+                m={4}
+                p={4}
+                borderRadius={16}
+                >
+                    <Text>Available Actions</Text>
+                    <GameButton onClick={rollDie} text={"Roll Die"} disabled={state.gameOver}/>
+                    <GameButton onClick={resetGame} text={"Reset"} />
+                </Flex>
+                <Box
+                    bg={'#F1F1F1'}
+                    m={4}
+                    p={4}
+                    borderRadius={16}
+                >
+                    <Text
+                        textAlign={'center'}
+                    >
+                        Current Roll: {state.currentRoll === null ? 'N/A' : state.currentRoll}
+                    </Text>
+                    {state.dieSvg}
+                </Box>
+                <Flex
+                    align={'center'}
+                    direction={'column'}
+                    bg={'#F1F1F1'}
+                    m={4}
+                    p={4}
+                    borderRadius={16}
+                >
+                    <Text>Current Scores</Text>
+                    {diceSidesKeys.map(side =>
+                        <Text key={side}>{`${side}: ${state.overallScore[DiceSides[side]]}`}</Text>
+                    )}
+                </Flex>
+            </SimpleGrid>
+
         </>
     );
 };
