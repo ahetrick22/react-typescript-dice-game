@@ -4,6 +4,7 @@ import {DiceSides, diceSidesKeys, diceSidesValues} from "../types/diceSides";
 import {DieSvgs} from "../components/DieSvgs";
 import {GameButton} from "../components/GameButton";
 import {GameSectionContainer, GameSectionContainerText} from "../components/GameSectionContainer";
+import backgroundImage from '../assets/background-image.jpg';
 
 type HomeState = {
     currentRoll: DiceSides | null,
@@ -83,7 +84,7 @@ export const Home = () => {
 
     return (
         <>
-            <Image src={require('../assets/background-image.jpg')} opacity={0.2} fit={'cover'} zIndex={-1} position={'fixed'} minH={'100%'}/>
+            <Image src={backgroundImage} opacity={0.2} fit={'cover'} zIndex={-1} position={'fixed'} minH={'100%'}/>
             <Heading
                 as="h1"
                 size={'2xl'}
