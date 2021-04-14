@@ -3,7 +3,7 @@ import { Image, Button, Heading, Text, SimpleGrid, Box, Flex } from "@chakra-ui/
 import {DiceSides, diceSidesKeys, diceSidesValues} from "../types/diceSides";
 import {DieSvgs} from "../components/DieSvgs";
 import {GameButton} from "../components/GameButton";
-import {GameSectionContainer} from "../components/GameSectionContainer";
+import {GameSectionContainer, GameSectionContainerText} from "../components/GameSectionContainer";
 
 type HomeState = {
     currentRoll: number | null,
@@ -63,6 +63,14 @@ export const Home = () => {
         setState(prevState => {return {...initialHomeState, fill: prevState.fill}});
     }
 
+    const getScoreText = (): string => {
+        if (state.gameOver) {
+            const winningScore = Object.keys(state.overallScore).find(key => state.overallScore[key] === 5);
+            return `Current game complete. The winner is ${winningScore}!`;
+        }
+        return `Current Roll: ${state.currentRoll === null ? 'N/A' : state.currentRoll}`;
+    }
+
     return (
         <>
             <Image src={require('../assets/background-image.jpg')} opacity={0.2} fit={'cover'} zIndex={-1} position={'fixed'} minH={'100%'}/>
@@ -79,20 +87,18 @@ export const Home = () => {
                 spacing="40px"
             >
                <GameSectionContainer>
-                    <Text>Available Actions</Text>
+                    <GameSectionContainerText text={"Available Actions"}/>
                     <GameButton onClick={rollDie} text={"Roll Die"} disabled={state.gameOver}/>
                     <GameButton onClick={resetGame} text={"Reset"} />
                 </GameSectionContainer>
                 <GameSectionContainer>
-                    <Text
-                        textAlign={'center'}
-                    >
-                        Current Roll: {state.currentRoll === null ? 'N/A' : state.currentRoll}
-                    </Text>
+                    <GameSectionContainerText
+                        text={getScoreText()}
+                    />
                     {state.dieSvg}
                 </GameSectionContainer>
                 <GameSectionContainer>
-                    <Text>Current Scores</Text>
+                    <GameSectionContainerText text={"Current Scores"} />
                     {diceSidesKeys.map(side =>
                         <Text key={side}>{`${side}: ${state.overallScore[DiceSides[side]]}`}</Text>
                     )}
