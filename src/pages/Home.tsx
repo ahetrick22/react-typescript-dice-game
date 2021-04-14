@@ -11,6 +11,7 @@ type HomeState = {
     dieSvg: ReactNode | null,
     fill: string,
     gameOver: boolean,
+    rollText: string,
 }
 
 // Initialize outside of component to prevent reallocation on each render
@@ -27,6 +28,7 @@ const initialHomeState: HomeState = {
     dieSvg: null,
     fill: '#000000',
     gameOver: false,
+    rollText: 'Current Roll: N/A'
 }
 
 export const Home = () => {
@@ -36,7 +38,11 @@ export const Home = () => {
         // If we've just gotten to 5, make sure that the user knows which number won and that the game stops
         const winningScore = Object.keys(state.overallScore).find(key => state.overallScore[key] === 5);
         if (winningScore) {
-            setState(prevState => {return {...prevState, gameOver: true}})
+            setState(prevState => {return {
+                ...prevState,
+                gameOver: true,
+                rollText: `Current game complete. The winner is ${winningScore}!`
+            }})
         }
     }, [state.overallScore])
 
@@ -61,6 +67,7 @@ export const Home = () => {
             return {
                 ...prevState,
                 currentRoll: newRoll,
+                rollText: `Current Roll: ${newRoll}`,
                 overallScore: {
                     ...prevState.overallScore,
                     [newRoll]: prevState.overallScore[newRoll] + 1
@@ -72,14 +79,6 @@ export const Home = () => {
     const resetGame = () => {
         // reset all values besides the selected die fill color
         setState(prevState => {return {...initialHomeState, fill: prevState.fill}});
-    }
-
-    const getScoreText = (): string => {
-        if (state.gameOver) {
-            const winningScore = Object.keys(state.overallScore).find(key => state.overallScore[key] === 5);
-            return `Current game complete. The winner is ${winningScore}!`;
-        }
-        return `Current Roll: ${state.currentRoll === null ? 'N/A' : state.currentRoll}`;
     }
 
     return (
@@ -118,7 +117,7 @@ export const Home = () => {
                 </GameSectionContainer>
                 <GameSectionContainer>
                     <GameSectionContainerText
-                        text={getScoreText()}
+                        text={state.rollText}
                     />
                     {state.dieSvg}
                 </GameSectionContainer>
