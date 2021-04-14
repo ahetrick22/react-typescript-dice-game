@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 enum DiceSides {
     one = 1,
@@ -34,6 +34,15 @@ const initialHomeState: HomeState = {
 export const Home = () => {
     const [state, setState] = useState<HomeState>(initialHomeState);
 
+    useEffect(() => {
+        // If we've just gotten to 5, make sure that the user knows which number won and that the game stops
+        const winningScore = Object.keys(state.overallScore).find(key => state.overallScore[key] === 5);
+        if (winningScore) {
+            alert(`The winner is ${winningScore}!`)
+            resetGame();
+        }
+    }, [state.overallScore])
+
     const rollDie = () => {
         // Get a random roll
         let newRoll = parseInt(diceSidesValues[Math.floor(Math.random() * diceSidesValues.length)]);
@@ -49,15 +58,18 @@ export const Home = () => {
                 }
             }
         });
+    }
 
-        // If we've just gotten to 5, make sure that the user knows which number won and that the game stops
+    const resetGame = () => {
+        setState(initialHomeState);
     }
 
     return (
         <>
-            <div>Title Here</div>
+            <div>Dicey Stuff</div>
             <div>Current Roll: {state.currentRoll === null ? 'N/A' : state.currentRoll}</div>
             <button onClick={rollDie}>Roll</button>
+            <button onClick={resetGame}>Reset</button>
             {diceSidesKeys.map(side => <div key={side}>{state.overallScore[DiceSides[side]]}</div>)}
         </>
     );
