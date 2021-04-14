@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import { Image, Button, Heading, Text } from "@chakra-ui/react"
 
 enum DiceSides {
     one = 1,
@@ -66,11 +67,18 @@ export const Home = () => {
 
     return (
         <>
-            <div>Dicey Stuff</div>
-            <div>Current Roll: {state.currentRoll === null ? 'N/A' : state.currentRoll}</div>
-            <button onClick={rollDie}>Roll</button>
-            <button onClick={resetGame}>Reset</button>
-            {diceSidesKeys.map(side => <div key={side}>{state.overallScore[DiceSides[side]]}</div>)}
+            <Image src={require('../assets/background-image.jpg')} opacity={0.2} fit={'cover'} zIndex={-1} position={'fixed'} minH={'100%'}/>
+            <Heading
+                as="h1"
+                size="4xl"
+                textAlign={'center'}
+            >
+                Welcome to Dicey Stuff
+            </Heading>
+            <Text>Current Roll {state.currentRoll === null ? 'N/A' : state.currentRoll}</Text>
+            <Button onClick={rollDie}>Roll</Button>
+            <Button onClick={resetGame}>Reset</Button>
+            {diceSidesKeys.map(side => <Text key={side}>{`${side}: ${state.overallScore[DiceSides[side]]}`}</Text>)}
         </>
     );
 };
