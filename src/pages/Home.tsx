@@ -3,6 +3,7 @@ import { Image, Button, Heading, Text, SimpleGrid, Box, Flex } from "@chakra-ui/
 import {DiceSides, diceSidesKeys, diceSidesValues} from "../types/diceSides";
 import {DieSvgs} from "../components/DieSvgs";
 import {GameButton} from "../components/GameButton";
+import {GameSectionContainer} from "../components/GameSectionContainer";
 
 type HomeState = {
     currentRoll: number | null,
@@ -67,7 +68,7 @@ export const Home = () => {
             <Image src={require('../assets/background-image.jpg')} opacity={0.2} fit={'cover'} zIndex={-1} position={'fixed'} minH={'100%'}/>
             <Heading
                 as="h1"
-                size="4xl"
+                size={'2xl'}
                 textAlign={'center'}
                 mb={8}
             >
@@ -77,44 +78,25 @@ export const Home = () => {
                 minChildWidth="200px"
                 spacing="40px"
             >
-                <Flex
-                align={'center'}
-                direction={'column'}
-                bg={'#F1F1F1'}
-                m={4}
-                p={4}
-                borderRadius={16}
-                >
+               <GameSectionContainer>
                     <Text>Available Actions</Text>
                     <GameButton onClick={rollDie} text={"Roll Die"} disabled={state.gameOver}/>
                     <GameButton onClick={resetGame} text={"Reset"} />
-                </Flex>
-                <Box
-                    bg={'#F1F1F1'}
-                    m={4}
-                    p={4}
-                    borderRadius={16}
-                >
+                </GameSectionContainer>
+                <GameSectionContainer>
                     <Text
                         textAlign={'center'}
                     >
                         Current Roll: {state.currentRoll === null ? 'N/A' : state.currentRoll}
                     </Text>
                     {state.dieSvg}
-                </Box>
-                <Flex
-                    align={'center'}
-                    direction={'column'}
-                    bg={'#F1F1F1'}
-                    m={4}
-                    p={4}
-                    borderRadius={16}
-                >
+                </GameSectionContainer>
+                <GameSectionContainer>
                     <Text>Current Scores</Text>
                     {diceSidesKeys.map(side =>
                         <Text key={side}>{`${side}: ${state.overallScore[DiceSides[side]]}`}</Text>
                     )}
-                </Flex>
+                </GameSectionContainer>
             </SimpleGrid>
 
         </>
