@@ -9,7 +9,8 @@ have been rolled. How many 1s, 2s, 3s, etc. Once a specific number has been roll
 __Additional Features:__ The die color can be changed at any time with the included color picker.
 
 ## Running locally
-If you want to just play the game, [check out the project here](diceystuff.aliciahetrick.com). If you'd rather build & 
+If you want to just play the game, [check out the project here](http://diceystuff.aliciahetrick.com). If you'd rather 
+build & 
 run it 
 locally, follow these steps:
 
@@ -22,7 +23,9 @@ A very basic testing setup (one render test) is configured with Jest & react-tes
 `yarn test`. Additional tests should of course be added given more time.
 
 ## Deployment
-This site was deployed with the command line tool from [surge](surge.sh).
+This site was deployed with my account using the one-step command line tool from [surge](https://surge.sh). To 
+deploy, I built the app (`yarn build`) and then deployed to my domain after logging in (`surge dist/ diceystuff.
+aliciahetrick.com`).
 
 ## Troubleshooting
 If you run into any issues with Parcel not rebuilding appropriately, use `yarn clean` to remove the cached build and 
@@ -69,6 +72,8 @@ to be forced.
   
 - Save the user's die color preference in local storage so that it persists on reload
   
+- Find more consistent SVGs (the 1 and 5 are slightly different from the others, but given that I wanted to use free 
+  ones, I accepted that for now)
 
 ## Attributions
 Die SVGs used with free licenses from the Noun Project requiring attribution: "5" die by ladhina from the Noun 
