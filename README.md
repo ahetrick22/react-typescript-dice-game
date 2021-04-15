@@ -24,8 +24,7 @@ A very basic testing setup (one render test) is configured with Jest & react-tes
 
 ## Deployment
 This site was deployed with my account using the one-step command line tool from [surge](https://surge.sh). To 
-deploy, I built the app (`yarn build`) and then deployed to my domain after logging in (`surge dist/ diceystuff.
-aliciahetrick.com`).
+deploy, I built the app into the `dist` directory with `yarn build` and then deployed to my domain after logging in with `surge <built dir> <domain>` (`surge dist/ diceystuff.aliciahetrick.com`).
 
 ## Troubleshooting
 If you run into any issues with Parcel not rebuilding appropriately, use `yarn clean` to remove the cached build and 
